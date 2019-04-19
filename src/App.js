@@ -6,25 +6,20 @@ import Entertodo from './components/entertodo';
 import Actualtodolist from './components/actualtodolist'
 import Bottom from './components/bottom'
 
+
 class App extends Component {
 
 
   render() {
+    const headinginfo = "Todo App written in React";
 
     return (
+
       <div className="container mainstyle" >
-        <div className="heading">
-          <Header />
-        </div>
-        <div>
-          <Entertodo />
-        </div>
-        <div>
-          <Actualtodolist />
-        </div>
-        <div className="bottom">
-          <Bottom />
-        </div>
+        <Header headingText={headinginfo} />
+        <Entertodo />
+        <Actualtodolist />
+        <Bottom />
       </div>
     );
   }
