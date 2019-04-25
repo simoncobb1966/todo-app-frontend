@@ -7,14 +7,16 @@
   margin-bottom: 20px;
   padding-bottom: 10px;
   padding-top: 10px;
-  width: 80%;
-  margin-left: 10%;
+  width: 90%;
+  margin-left: 5%;
   background-color: white;
   border: grey;
   border-radius: 15px;
   border-color: grey;
   border-width: 2px;
   border-style: solid;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 body {
