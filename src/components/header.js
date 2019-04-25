@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 class Header extends Component {
-    render(props) {
+    render() {
         return (
             <div className="heading">
                 <h1>{this.props.headingText}</h1>
