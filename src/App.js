@@ -16,11 +16,17 @@ class App extends Component {
 
   addTask = (taskDescription) => {
     let currentTasks = this.state.tasks
-    currentTasks.push(taskDescription)
+    currentTasks.push({taskText: taskDescription,
+      status: "ACTIVE"})
     this.setState({
       tasks: currentTasks
     })
   }
+
+doneStatus = (key) => {
+  alert ("doneStatus Function")
+
+}
 
   render() {
 
@@ -36,7 +42,9 @@ class App extends Component {
         <div className="mainList">
           {
             this.state.tasks.map(function (item, index) {
-              return <Actualtodolist taskDescription={item} key={index} />
+              return <Actualtodolist keyValue={index} taskDescription={item.taskText} taskStatus={item.status} 
+              // doneStatusFunction={this.doneStatus} 
+               />
             })
           }
           <Numberoftasks numberOfTasks={this.state.tasks.length} />

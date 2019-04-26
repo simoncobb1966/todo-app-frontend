@@ -1,12 +1,17 @@
 import React, { Component } from 'react';
 
 class Actualtodolist extends Component {
+
+
     render() {
+
         return (
 
             <div className="row">
                 <div className="col-sm-12 col-md-8 todoText">
-                    {this.props.taskDescription}
+                    {
+                        this.props.taskDescription + " " + this.props.taskStatus + " " + this.props.keyValue + " OK"
+                    }
                 </div>
 
                 <div className="col-sm-6 col-md-2">
