@@ -89,6 +89,18 @@ body {
   margin-right: -15px;
 }
 
+.blue {
+  color: blue
+}
+
+.black {
+  color: black
+}
+
+.green {
+  color: green
+}
+
 @media only screen and (max-width:600px) {
   .bottom {
     color: red;

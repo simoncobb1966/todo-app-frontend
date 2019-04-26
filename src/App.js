@@ -10,27 +10,56 @@ import Numberoftasks from './components/Numberoftasks'
 
 class App extends Component {
 
+
+
   state = {
-    tasks: []
+    tasks: [],
+    qtyOfTasks: 0
   }
 
-  addTask = (taskDescription) => {
+  addDone = (kv) => {
     let currentTasks = this.state.tasks
-    currentTasks.push({taskText: taskDescription,
-      status: "ACTIVE"})
+    // alert (currentTasks[kv].status+" " + kv)
+    currentTasks[kv].status = "DONE"
+
     this.setState({
       tasks: currentTasks
     })
   }
 
-doneStatus = (key) => {
-  alert ("doneStatus Function")
+  addDeleted = (kv) => {
+    let currentTasks = this.state.tasks
+    delete currentTasks[kv]
+    this.setState({
+      tasks: currentTasks
+    })
+  }
 
-}
+
+  addTask = (taskDescription) => {
+    let currentTasks = this.state.tasks
+    currentTasks.push({
+      taskText: taskDescription,
+      status: "ACTIVE"
+    })
+    this.setState({
+      tasks: currentTasks
+    })
+  }
+
+  qtyOfTasks = () => {
+    let qtyTasks = 0
+    this.state.tasks.forEach(function (item) {
+      qtyTasks = qtyTasks + (item.taskText !== "")
+    })
+    return qtyTasks
+  }
+
 
   render() {
 
     const headinginfo = "Todo App written in React";
+    const self = this
 
     return (
 
@@ -40,14 +69,17 @@ doneStatus = (key) => {
         <Entertodo addTaskFunction={this.addTask} />
 
         <div className="mainList">
+
           {
             this.state.tasks.map(function (item, index) {
-              return <Actualtodolist keyValue={index} taskDescription={item.taskText} taskStatus={item.status} 
-              // doneStatusFunction={this.doneStatus} 
-               />
+              return <Actualtodolist
+                addDoneFunction={self.addDone}
+                addDeletedFunction={self.addDeleted}
+                keyValue={index} taskDescription={item.taskText} taskStatus={item.status} />
             })
           }
-          <Numberoftasks numberOfTasks={this.state.tasks.length} />
+
+          <Numberoftasks qtyOfTasksFunction={self.qtyOfTasks} />
         </div>
 
         <Footer />
