@@ -16,7 +16,7 @@ class Actualtodolist extends Component {
                     <button type="button" class="btn btn-danger buttona">Delete</button>
                 </div>
             </div >
-            )
+        )
     }
 }
 

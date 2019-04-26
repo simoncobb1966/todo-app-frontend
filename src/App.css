@@ -68,16 +68,13 @@ body {
   margin-right: auto;
 }
 
-#input {
+#todoInput {
+  margin-bottom: 10px;
+  font-size: 20pt;
   width: 80%;
   margin-left: 10%;
   margin-top: 25px;
   text-align: center;
-}
-
-#todoInput {
-  margin-bottom: 10px;
-  font-size: 20pt;
 }
 
 .bottom {
