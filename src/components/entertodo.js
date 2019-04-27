@@ -12,8 +12,16 @@ inputBoxChanged = (event)=> {
     })
 }
 
-addTaskClicked = ()=> {
-    this.props.addTaskFunction(this.state.taskDescription)
+addTaskEndClicked = ()=> {
+    if (this.state.taskDescription !=="") {
+    this.props.addTaskEndFunction(this.state.taskDescription)
+    }
+ }
+
+ addTaskTopClicked = ()=> {
+    if (this.state.taskDescription !=="") {
+    this.props.addTaskTopFunction(this.state.taskDescription)
+    }
  }
 
     render() {
@@ -24,7 +32,8 @@ addTaskClicked = ()=> {
                     >
                     </textarea>
                 <div className="col text-center">
-                    <button type="submit" onClick={this.addTaskClicked} class="btn btn-primary">Submit</button>
+                    <button type="submit" onClick={this.addTaskEndClicked} className="btn btn-primary addbutton">Add to end of list</button>
+                    <button type="submit" onClick={this.addTaskTopClicked} className="btn btn-primary addbutton">Add to top of list</button>
                 </div>
             </div>
         )

@@ -6,6 +6,7 @@ import Entertodo from './components/entertodo';
 import Actualtodolist from './components/actualtodolist'
 import Footer from './components/footer'
 import Numberoftasks from './components/Numberoftasks'
+import Clearbutton from './components/clearbutton'
 
 
 class App extends Component {
@@ -17,11 +18,17 @@ class App extends Component {
     qtyOfTasks: 0
   }
 
+clearList = () => {
+alert ("clear list function")
+
+  this.setState({
+    tasks: []
+  })
+}
+
   addDone = (kv) => {
     let currentTasks = this.state.tasks
-    // alert (currentTasks[kv].status+" " + kv)
     currentTasks[kv].status = "DONE"
-
     this.setState({
       tasks: currentTasks
     })
@@ -35,10 +42,20 @@ class App extends Component {
     })
   }
 
-
-  addTask = (taskDescription) => {
+  addTaskEnd = (taskDescription) => {
     let currentTasks = this.state.tasks
     currentTasks.push({
+      taskText: taskDescription,
+      status: "ACTIVE"
+    })
+    this.setState({
+      tasks: currentTasks
+    })
+  }
+
+  addTaskTop = (taskDescription) => {
+    let currentTasks = this.state.tasks
+    currentTasks.unshift({
       taskText: taskDescription,
       status: "ACTIVE"
     })
@@ -56,30 +73,37 @@ class App extends Component {
   }
 
 
+
   render() {
 
     const headinginfo = "Todo App written in React";
-    const self = this
+
 
     return (
 
       <div className="container mainstyle">
         <Header headingText={headinginfo} />
 
-        <Entertodo addTaskFunction={this.addTask} />
+        <Entertodo addTaskEndFunction={this.addTaskEnd}
+          addTaskTopFunction={this.addTaskTop}
+        />
 
         <div className="mainList">
 
           {
-            this.state.tasks.map(function (item, index) {
+            this.state.tasks.map((item, i) => {
               return <Actualtodolist
-                addDoneFunction={self.addDone}
-                addDeletedFunction={self.addDeleted}
-                keyValue={index} taskDescription={item.taskText} taskStatus={item.status} />
+                addDoneFunction={this.addDone}
+                addDeletedFunction={this.addDeleted}
+                keyValue={i} taskDescription={item.taskText} taskStatus={item.status} />
             })
           }
 
-          <Numberoftasks qtyOfTasksFunction={self.qtyOfTasks} />
+          <Numberoftasks qtyOfTasksFunction={this.qtyOfTasks} />
+        </div>
+
+        <div className="clearButton">
+          <Clearbutton clearListFunction={this.clearList} />
         </div>
 
         <Footer />

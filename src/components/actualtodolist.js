@@ -4,37 +4,35 @@ class Actualtodolist extends Component {
 
 
 
-    doneClicked = ()=> {
+    doneClicked = () => {
         this.props.addDoneFunction(this.props.keyValue)
-     }
+    }
 
-     deletedClicked =()=> {
-         this.props.addDeletedFunction(this.props.keyValue)
-     }
+    deletedClicked = () => {
+        this.props.addDeletedFunction(this.props.keyValue)
+    }
 
-     textCol = ()=> {
-         if (this.props.taskStatus==="DONE") {
-             return "green"
-         } else {
-             return "black"
-         }
-     }
+    textCol = () => {
+        if (this.props.taskStatus === "DONE") {
+            return "green"
+        } else {
+            return "black"
+        }
+    }
 
 
 
 
     render() {
 
-        var col=""
+        var col = ""
 
         return (
 
             <div className="row">
                 <div className="col-sm-12 col-md-8 todoText">
                     {
-                        // this.props.taskDescription + " " + this.props.taskStatus + " " + this.props.keyValue + " OK"
-                    //    < p style="color:blue;"> "test " + this.props.taskDescription + "test" </p>
-                    <div className={this.textCol()} >{this.props.taskDescription}</div>
+                        <div className={this.textCol()} >{this.props.taskDescription}</div>
                     }
                 </div>
 
