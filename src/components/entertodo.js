@@ -16,16 +16,13 @@ class Entertodo extends Component {
         if (this.state.taskDescription !== "") {
             //turn 1st char to upper case
             var taskString = this.state.taskDescription.charAt(0).toUpperCase()+this.state.taskDescription.slice(1)
-            this.props.addTaskFunction(taskString, event.target.id)
+            this.props.buttonHandlerFunction(event.target.id, taskString)
             this.refs.textInput.value="";
+            this.setState({
+                taskDescription: ""
+            })
         }
     }
-
-    Uppercasefirst(string) 
-    {
-        return string.charAt(0).toUpperCase() + string.slice(1);
-    }
-
 
     render() {
         return (

@@ -8,15 +8,22 @@ import Footer from './components/footer'
 import Numberoftasks from './components/Numberoftasks'
 import Clearbutton from './components/clearbutton'
 
-
 class App extends Component {
-
 
   state = {
     tasks: [],
     qtyOfTasks: 0,
   }
 
+  buttonHandler = (button, data) => {
+    if (button === "clear") { this.clearList() }
+    if (button === "done") { this.addDone(data) }
+    if (button === "delete") { this.addDeleted(data) }
+    if (button === "upButton") { this.moveTaskUp(button, data) }
+    if (button === "downButton") { this.moveTaskDown(button, data) }
+    if (button === "topButton") { this.addTask(button, data) }
+    if (button === "endButton") { this.addTask(button, data) }
+  }
 
   redisplayTasks = (currentTasks) => {
     this.setState({
@@ -29,98 +36,108 @@ class App extends Component {
     this.redisplayTasks(currentTasks)
   }
 
-  moveTask = (id, i) => {
+  moveTaskUp = (id, i) => {
     let currentTasks = this.state.tasks
-    if (id === "upButton" && i > 0) {
-      let temp = currentTasks[i - 1]
-      currentTasks[i - 1] = currentTasks[i]
+    if (i > 0) {
+      for (let j = i - 1; j > -1; j--) {
+        if (currentTasks[j].status !== "DELETED") {
+          let temp = currentTasks[j]
+          currentTasks[j] = currentTasks[i]
+          currentTasks[i] = temp
+          break
+        }
+      }
+    }
+    this.redisplayTasks(currentTasks)
+  }
+
+  moveTaskDown = (id, i) => {
+    let currentTasks = this.state.tasks
+  if (i < this.state.tasks.length - 1) {
+  for (let j = i + 1; j < this.state.tasks.length; j++) {
+    if (currentTasks[j].status !== "DELETED") {
+      let temp = currentTasks[j]
+      currentTasks[j] = currentTasks[i]
       currentTasks[i] = temp
+      break
     }
-    if (id === "downButton" && i < this.state.tasks.length - 1) {
-      let temp = currentTasks[i + 1]
-      currentTasks[i + 1] = currentTasks[i]
-      currentTasks[i] = temp
-    }
-    this.redisplayTasks(currentTasks)
+  }
+}
+this.redisplayTasks(currentTasks)
   }
 
-  addDone = (i) => {
-    let currentTasks = this.state.tasks
-    currentTasks[i].status = "DONE"
-    this.redisplayTasks(currentTasks)
-  }
+addDone = (i) => {
+  let currentTasks = this.state.tasks
+  currentTasks[i].status = "DONE"
+  this.redisplayTasks(currentTasks)
+}
 
-  addDeleted = (i) => {
-    let currentTasks = this.state.tasks
-    delete currentTasks[i]
-    this.redisplayTasks(currentTasks)
-  }
+addDeleted = (i) => {
+  let currentTasks = this.state.tasks
+  currentTasks[i].status = "DELETED"
+  this.redisplayTasks(currentTasks)
+}
 
-  addTask = (taskDescription, id) => {
-    let currentTasks = this.state.tasks
-    if (id === "topButton") {
-      currentTasks.unshift({
-        taskText: taskDescription,
-        status: "ACTIVE"
-      })
-    }
-    else {
-      currentTasks.push({
-        taskText: taskDescription,
-        status: "ACTIVE"
-      })
-    }
-    this.redisplayTasks(currentTasks)
-  }
-
-  qtyOfTasks = () => {
-    let qtyTasks = 0
-    this.state.tasks.forEach(function (item) {
-      qtyTasks = qtyTasks + (item.taskText !== "")
+addTask = (id, taskDescription) => {
+  let currentTasks = this.state.tasks
+  if (id === "topButton") {
+    currentTasks.unshift({
+      taskText: taskDescription,
+      status: "ACTIVE"
     })
-    return qtyTasks
   }
+  else {
+    currentTasks.push({
+      taskText: taskDescription,
+      status: "ACTIVE"
+    })
+  }
+  this.redisplayTasks(currentTasks)
+}
 
-  render() {
-    return (
+qtyOfTasks = () => {
+  let qtyTasks = 0
+  this.state.tasks.forEach(function (item) {
+    qtyTasks = qtyTasks + (item.status === "ACTIVE")
+  })
+  return qtyTasks
+}
 
-      <div className="container mainstyle">
-        <Header />
+render() {
+  return (
 
-        <Entertodo
-          addTaskFunction={this.addTask}
-        />
+    <div className="container mainstyle">
+      <Header />
 
-        <div className="mainList">
-          {
-            this.state.tasks.map((item, i) => {
-              return <Actualtodolist
-                addDoneFunction={this.addDone}
-                addDeletedFunction={this.addDeleted}
-                keyValue={i}
-                taskDescription={item.taskText}
-                taskStatus={item.status}
-                moveTaskFunction={this.moveTask}
-              />
-            })
-          }
+      <Entertodo
+        buttonHandlerFunction={this.buttonHandler} />
 
-          <Numberoftasks
-            qtyOfTasksFunction={this.qtyOfTasks}
-          />
-        </div>
+      <div className="mainList">
+        {
+          this.state.tasks.map((item, i) => {
+            return <Actualtodolist
+              keyValue={i}
+              taskDescription={item.taskText}
+              taskStatus={item.status}
+              buttonHandlerFunction={this.buttonHandler}
+            />
+          })
+        }
 
-        <div className="clearButton">
-          <Clearbutton
-            clearListFunction={this.clearList}
-          />
-        </div>
-        <Footer />
+        <Numberoftasks
+          qtyOfTasksFunction={this.qtyOfTasks} />
       </div>
 
+      <div className="clearButton">
+        <Clearbutton
+          buttonHandlerFunction={this.buttonHandler} />
+      </div>
 
-    );
-  }
+      <Footer />
+    </div>
+
+  );
+}
 }
 
 export default App;

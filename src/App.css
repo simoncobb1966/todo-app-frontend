@@ -2,6 +2,15 @@
   text-align: center;
 }
 
+
+.hiderow {
+  display: none;
+  background: green
+}
+
+.viewrow {
+  display: block;
+}
 .mainList {
   margin-top: 20px;
   margin-bottom: 20px;
