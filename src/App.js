@@ -8,12 +8,17 @@ import Footer from './components/footer'
 import Numberoftasks from './components/Numberoftasks'
 import Clearbutton from './components/clearbutton'
 
+
+
 class App extends Component {
 
+ 
   state = {
     tasks: [],
     qtyOfTasks: 0,
   }
+
+
 
   clearList = () => {
     this.setState({
@@ -21,8 +26,24 @@ class App extends Component {
     })
   }
 
-  moveTask = (id, i) =>{
-    alert (id + " " + i)
+  moveTask = (id, i) => {
+    let currentTasks = this.state.tasks
+    if (id === "upButton" && i > 0) {
+      let temp = currentTasks[i - 1]
+      currentTasks[i - 1] = currentTasks[i]
+      currentTasks[i] = temp
+    }
+ 
+    if (id === "downButton" && i < this.state.tasks.length - 1) {
+      let temp = currentTasks[i + 1]
+      currentTasks[i + 1] = currentTasks[i]
+      currentTasks[i] = temp
+    }
+
+    this.setState({
+      tasks: currentTasks
+    })
+
   }
 
   addDone = (kv) => {
@@ -43,18 +64,18 @@ class App extends Component {
 
   addTask = (taskDescription, id) => {
     let currentTasks = this.state.tasks
-    if (id==="topButton") {
-    currentTasks.unshift({
-      taskText: taskDescription,
-      status: "ACTIVE"
-    })
-  }
-else {
-  currentTasks.push({
-    taskText: taskDescription,
-    status: "ACTIVE"
-  })
-}
+    if (id === "topButton") {
+      currentTasks.unshift({
+        taskText: taskDescription,
+        status: "ACTIVE"
+      })
+    }
+    else {
+      currentTasks.push({
+        taskText: taskDescription,
+        status: "ACTIVE"
+      })
+    }
     this.setState({
       tasks: currentTasks
     })
