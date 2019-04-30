@@ -68,7 +68,7 @@ body {
   margin-right: auto;
 }
 
-#todoInput {
+.todoInput {
   margin-bottom: 10px;
   font-size: 20pt;
   width: 80%;

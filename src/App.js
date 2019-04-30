@@ -8,23 +8,22 @@ import Footer from './components/footer'
 import Numberoftasks from './components/Numberoftasks'
 import Clearbutton from './components/clearbutton'
 
-
 class App extends Component {
-
-
 
   state = {
     tasks: [],
-    qtyOfTasks: 0
+    qtyOfTasks: 0,
   }
 
-clearList = () => {
-alert ("clear list function")
+  clearList = () => {
+    this.setState({
+      tasks: []
+    })
+  }
 
-  this.setState({
-    tasks: []
-  })
-}
+  moveTask = (id, i) =>{
+    alert (id + " " + i)
+  }
 
   addDone = (kv) => {
     let currentTasks = this.state.tasks
@@ -42,23 +41,20 @@ alert ("clear list function")
     })
   }
 
-  addTaskEnd = (taskDescription) => {
+  addTask = (taskDescription, id) => {
     let currentTasks = this.state.tasks
-    currentTasks.push({
-      taskText: taskDescription,
-      status: "ACTIVE"
-    })
-    this.setState({
-      tasks: currentTasks
-    })
-  }
-
-  addTaskTop = (taskDescription) => {
-    let currentTasks = this.state.tasks
+    if (id==="topButton") {
     currentTasks.unshift({
       taskText: taskDescription,
       status: "ACTIVE"
     })
+  }
+else {
+  currentTasks.push({
+    taskText: taskDescription,
+    status: "ACTIVE"
+  })
+}
     this.setState({
       tasks: currentTasks
     })
@@ -72,42 +68,46 @@ alert ("clear list function")
     return qtyTasks
   }
 
-
-
   render() {
-
-    const headinginfo = "Todo App written in React";
-
-
     return (
 
       <div className="container mainstyle">
-        <Header headingText={headinginfo} />
+        <Header />
 
-        <Entertodo addTaskEndFunction={this.addTaskEnd}
-          addTaskTopFunction={this.addTaskTop}
+        <Entertodo
+          addTaskFunction={this.addTask}
         />
 
         <div className="mainList">
-
           {
             this.state.tasks.map((item, i) => {
               return <Actualtodolist
                 addDoneFunction={this.addDone}
                 addDeletedFunction={this.addDeleted}
-                keyValue={i} taskDescription={item.taskText} taskStatus={item.status} />
+                keyValue={i}
+                taskDescription={item.taskText}
+                taskStatus={item.status}
+                moveTaskFunction={this.moveTask}
+              />
             })
           }
 
-          <Numberoftasks qtyOfTasksFunction={this.qtyOfTasks} />
+          <Numberoftasks
+            qtyOfTasksFunction={this.qtyOfTasks}
+          />
         </div>
 
         <div className="clearButton">
-          <Clearbutton clearListFunction={this.clearList} />
+          <Clearbutton
+            clearListFunction={this.clearList}
+          />
         </div>
 
         <Footer />
+
       </div>
+
+
     );
   }
 }
