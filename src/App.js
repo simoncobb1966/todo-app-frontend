@@ -73,6 +73,7 @@ class App extends Component {
   addDone = (i) => {
     let currentTasks = this.state.tasks
     currentTasks[i].status = "DONE"
+    this.qtyOfTasks()
     this.redisplayTasks(currentTasks)
   }
 
