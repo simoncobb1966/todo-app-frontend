@@ -22,13 +22,21 @@ class Actualtodolist extends Component {
         }
     }
 
-hiderow = () => {
-    if (this.props.taskStatus === "DELETED") {
-        return "hiderow"
-    } else {
-        return "viewrow"
+    hiderow = () => {
+        if (this.props.taskStatus === "DELETED") {
+            return "hiderow"
+        } else {
+            return "viewrow"
+        }
     }
-}
+
+    hideButtons = () => {
+        if (this.props.numOfTasks === 1) {
+            return "hiderow"
+        } else {
+            return "btn btn-info buttona"
+        }
+    }
 
 
     render() {
@@ -36,19 +44,22 @@ hiderow = () => {
         return (
             <div className={this.hiderow()}>
                 <div className="row ">
-                    <div className="col-sm-12 col-md-8 todoText">
+                    <div className="col-sm-12 col-md-6 col-lg-8 todoText">
                         {
                             <div id={this.props.keyValue} className={this.textCol()} >{this.props.taskDescription}</div>
                         }
                     </div>
 
-                    <div className="col-sm-6 col-md-2">
-                        <button type="button" id="done" onClick={this.doneClicked} class="btn btn-success buttona">Done</button>
-                        <button type="button" onClick={this.arrowClicked} class="btn btn-info buttona" id="upButton">↑</button>
-                    </div>
-                    <div className="col-sm-6 col-md-2">
-                        <button type="button" onClick={this.arrowClicked} class="btn btn-info buttona" id="downButton">↓</button>
-                        <button type="button" id="delete" onClick={this.deletedClicked} class="btn btn-danger buttona" >Delete</button>
+
+
+                    <div className="col-sm-12 col-md-6 col-lg-4 buttonDiv">
+                        <button type="button" id="done" onClick={this.doneClicked} class="btn btn-success buttona" data-toggle="tooltip" data-placement="bottom" title="Marks the task as done">Done</button>
+                        <button type="button" onClick={this.arrowClicked} class="btn btn-info buttona" id="upButton" data-toggle="tooltip" data-placement="top" title="Move the task up the list" className={this.hideButtons()}>↑</button>
+                        <button type="button" onClick={this.arrowClicked} class="btn btn-info buttona" id="downButton" data-toggle="tooltip" data-placement="bottom" title="Move the task down the list" className={this.hideButtons()}>↓</button>
+                        <button type="button" id="delete" onClick={this.deletedClicked} class="btn btn-danger buttona" data-toggle="tooltip" data-placement="bottom" title="Deletes the task" >Delete</button>
+
+
+
                     </div>
                 </div >
             </div>

@@ -2,15 +2,19 @@
   text-align: center;
 }
 
+.green {
+  text-decoration: line-through;
+  color: green;
+}
 
 .hiderow {
   display: none;
-  background: green
 }
 
 .viewrow {
   display: block;
 }
+
 .mainList {
   margin-top: 20px;
   margin-bottom: 20px;
@@ -63,6 +67,15 @@ body {
   margin-bottom: 5px;
   margin-right: 3px;
   margin-left: 3px;
+  border: 2px solid black;
+  transition-duration: 0.1s;
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.buttona:hover {
+  background-color: black;
+  color: white;
+  border: 2px solid white;
 }
 
 #todo2 p {
@@ -112,13 +125,22 @@ body {
 }
 
 .addbutton {
-  margin-left:5px;
-  margin-right:5px;
+  margin-left: 5px;
+  margin-right: 5px;
 }
 
-@media only screen and (max-width:600px) {
+.buttonDiv {
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media only screen and (max-width:767px) {
   .bottom {
     color: red;
     text-decoration: underline red;
+  }
+  .buttonDiv {
+    display: flex;
+    justify-content: flex-start;
   }
 }
