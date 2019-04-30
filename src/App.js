@@ -9,21 +9,24 @@ import Numberoftasks from './components/Numberoftasks'
 import Clearbutton from './components/clearbutton'
 
 
-
 class App extends Component {
 
- 
+
   state = {
     tasks: [],
     qtyOfTasks: 0,
   }
 
 
+  redisplayTasks = (currentTasks) => {
+    this.setState({
+      tasks: currentTasks
+    })
+  }
 
   clearList = () => {
-    this.setState({
-      tasks: []
-    })
+    let currentTasks = []
+    this.redisplayTasks(currentTasks)
   }
 
   moveTask = (id, i) => {
@@ -33,33 +36,24 @@ class App extends Component {
       currentTasks[i - 1] = currentTasks[i]
       currentTasks[i] = temp
     }
- 
     if (id === "downButton" && i < this.state.tasks.length - 1) {
       let temp = currentTasks[i + 1]
       currentTasks[i + 1] = currentTasks[i]
       currentTasks[i] = temp
     }
-
-    this.setState({
-      tasks: currentTasks
-    })
-
+    this.redisplayTasks(currentTasks)
   }
 
-  addDone = (kv) => {
+  addDone = (i) => {
     let currentTasks = this.state.tasks
-    currentTasks[kv].status = "DONE"
-    this.setState({
-      tasks: currentTasks
-    })
+    currentTasks[i].status = "DONE"
+    this.redisplayTasks(currentTasks)
   }
 
-  addDeleted = (kv) => {
+  addDeleted = (i) => {
     let currentTasks = this.state.tasks
-    delete currentTasks[kv]
-    this.setState({
-      tasks: currentTasks
-    })
+    delete currentTasks[i]
+    this.redisplayTasks(currentTasks)
   }
 
   addTask = (taskDescription, id) => {
@@ -76,9 +70,7 @@ class App extends Component {
         status: "ACTIVE"
       })
     }
-    this.setState({
-      tasks: currentTasks
-    })
+    this.redisplayTasks(currentTasks)
   }
 
   qtyOfTasks = () => {
@@ -123,9 +115,7 @@ class App extends Component {
             clearListFunction={this.clearList}
           />
         </div>
-
         <Footer />
-
       </div>
 
 
