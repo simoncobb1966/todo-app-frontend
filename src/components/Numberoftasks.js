@@ -5,7 +5,7 @@ class Numberoftasks extends Component {
         return (
             <div className="col text-center">
                 <div className="btn btn-primary notifications">
-                    Number of items to do <span class="badge badge-light">{this.props.numOfTasks}</span>
+                    Number of items in the list <span class="badge badge-light">{this.props.numOfTasks}</span>
                 </div>
             </div>
         )

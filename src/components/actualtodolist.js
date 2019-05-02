@@ -2,67 +2,61 @@ import React, { Component } from 'react';
 
 class Actualtodolist extends Component {
 
-    arrowClicked = (event) => {
-        this.props.buttonHandlerFunction(event.target.id, this.props.keyValue)
-    }
-
-    doneClicked = (event) => {
-        this.props.buttonHandlerFunction(event.target.id, this.props.keyValue)
-    }
-
-    deletedClicked = (event) => {
-        this.props.buttonHandlerFunction(event.target.id, this.props.keyValue)
-    }
-
     textCol = () => {
-        if (this.props.taskStatus === "DONE") {
+        if (this.props.task.done) {
             return "green"
         } else {
             return "black"
         }
     }
 
-    hiderow = () => {
-        if (this.props.taskStatus === "DELETED") {
-            return "hiderow"
+    doneButton = () => {
+        if (this.props.task.done) {
+            return "hide"
         } else {
-            return "viewrow"
+            return "btn btn-success buttona"
         }
     }
 
     hideButtons = () => {
         if (this.props.numOfTasks === 1) {
-            return "hiderow"
+            return "hide"
         } else {
             return "btn btn-info buttona"
         }
     }
 
+    firstUpButton = () => {
+        if (this.props.numOfTasks === 1 || this.props.indexkey === 0) {
+            return "hide"
+        }
+        else return "btn btn-info buttona"
+    }
+
+    lastDownButton = () => {
+        if (this.props.numOfTasks === 1 || this.props.indexkey === this.props.numOfTasks - 1) { return "hide" }
+        else return "btn btn-info buttona"
+    }
 
     render() {
 
         return (
-            <div className={this.hiderow()}>
-                <div className="row ">
-                    <div className="col-sm-12 col-md-6 col-lg-8 todoText">
-                        {
-                            <div id={this.props.keyValue} className={this.textCol()} >{this.props.taskDescription}</div>
-                        }
-                    </div>
+            <div className="row ">
+                <div className="col-sm-12 col-md-6 col-lg-8 todoText">
+                    {
+                        <div id={this.props.task.id} className={this.textCol()} >{this.props.task.taskText}</div>
+                    }
+                </div>
 
 
 
-                    <div className="col-sm-12 col-md-6 col-lg-4 buttonDiv">
-                        <button type="button" id="done" onClick={this.doneClicked} class="btn btn-success buttona" data-toggle="tooltip" data-placement="bottom" title="Marks the task as done">Done</button>
-                        <button type="button" onClick={this.arrowClicked} class="btn btn-info buttona" id="upButton" data-toggle="tooltip" data-placement="top" title="Move the task up the list" className={this.hideButtons()}>↑</button>
-                        <button type="button" onClick={this.arrowClicked} class="btn btn-info buttona" id="downButton" data-toggle="tooltip" data-placement="bottom" title="Move the task down the list" className={this.hideButtons()}>↓</button>
-                        <button type="button" id="delete" onClick={this.deletedClicked} class="btn btn-danger buttona" data-toggle="tooltip" data-placement="bottom" title="Deletes the task" >Delete</button>
-
-
-
-                    </div>
-                </div >
-            </div>
+                <div className="col-sm-12 col-md-6 col-lg-4 buttonDiv">
+                    <button type="button" onClick={() => this.props.buttonHandlerFunction("done", this.props.task.id)} className={this.doneButton()} data-toggle="tooltip" data-placement="bottom" title="Marks the task as done">Done</button>
+                    <button type="button" onClick={() => this.props.buttonHandlerFunction("upButton", this.props.task.id)} className={this.firstUpButton()} data-toggle="tooltip" data-placement="top" title="Move the task up the list" >↑</button>
+                    <button type="button" onClick={() => this.props.buttonHandlerFunction("downButton", this.props.task.id)} className={this.lastDownButton()} data-toggle="tooltip" data-placement="bottom" title="Move the task down the list" >↓</button>
+                    <button type="button" onClick={() => this.props.buttonHandlerFunction("delete", this.props.task.id)} class="btn btn-danger buttona" data-toggle="tooltip" data-placement="bottom" title="Deletes the task" >Delete</button>
+                </div>
+            </div >
         )
     }
 }

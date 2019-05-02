@@ -26,7 +26,7 @@ class Entertodo extends Component {
 
     hideButtons = () => {
         if (this.props.numOfTasks === 0) {
-            return "hiderow"
+            return "hide"
         } else {
             return "btn btn-primary addbutton"
         }

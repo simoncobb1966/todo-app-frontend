@@ -7,111 +7,111 @@ import Actualtodolist from './components/actualtodolist'
 import Footer from './components/footer'
 import Numberoftasks from './components/Numberoftasks'
 import Clearbutton from './components/clearbutton'
+import uuidv1 from 'uuid/v1'
 
 
 class App extends Component {
 
   state = {
     tasks: [],
-    qtyOfTasks: 0,
+    qtyOfTasks: 0
   }
 
   buttonHandler = (button, data) => {
+    // alert (button + "  " + data)
     if (button === "clear") { this.clearList() }
-    if (button === "done") { this.addDone(data) }
-    if (button === "delete") { this.addDeleted(data) }
-    if (button === "upButton") { this.moveTaskUp(button, data) }
-    if (button === "downButton") { this.moveTaskDown(button, data) }
+    if (button === "done") { this.Done(data) }
+    if (button === "delete") { this.Deleted(data) }
+    if (button === "upButton") { this.moveTaskUp(data) }
+    if (button === "downButton") { this.moveTaskDown(data) }
     if (button === "topButton") { this.addTask(button, data) }
     if (button === "endButton") { this.addTask(button, data) }
   }
 
-  redisplayTasks = (currentTasks) => {
-    this.setState({
-      tasks: currentTasks
-    })
-  }
-
   clearList = () => {
+    let currentTasks = []
     this.setState({
+      tasks: currentTasks,
       qtyOfTasks: 0
     })
-    let currentTasks = []
-    this.redisplayTasks(currentTasks)
   }
 
-  moveTaskUp = (id, i) => {
-    let currentTasks = this.state.tasks
-    if (i > 0) {
-      for (let j = i - 1; j > -1; j--) {
-        if (currentTasks[j].status !== "DELETED") {
-          let temp = currentTasks[j]
-          currentTasks[j] = currentTasks[i]
-          currentTasks[i] = temp
-          break
-        }
+  moveTaskUp = (id) => {
+    var tTasks = this.state.tasks
+    for (let i = 1; i < tTasks.length; i++) {
+      if (id === tTasks[i].id) {
+        let a = this.state.tasks[i]
+        let b = this.state.tasks[i - 1]
+        tTasks[i - 1] = a
+        tTasks[i] = b
       }
     }
-    this.redisplayTasks(currentTasks)
+    this.setState({
+      tasks: tTasks,
+      qtyOfTasks: this.state.tasks.length
+    })
   }
 
-  moveTaskDown = (id, i) => {
-    let currentTasks = this.state.tasks
-    if (i < this.state.tasks.length - 1) {
-      for (let j = i + 1; j < this.state.tasks.length; j++) {
-        if (currentTasks[j].status !== "DELETED") {
-          let temp = currentTasks[j]
-          currentTasks[j] = currentTasks[i]
-          currentTasks[i] = temp
-          break
-        }
+  moveTaskDown = (id) => {
+    var tTasks = this.state.tasks
+    for (let i = tTasks.length - 2; i > -1; i--) {
+      if (id === tTasks[i].id) {
+        let a = this.state.tasks[i]
+        let b = this.state.tasks[i + 1]
+        tTasks[i + 1] = a
+        tTasks[i] = b
       }
     }
-    this.redisplayTasks(currentTasks)
+    this.setState({
+      tasks: tTasks,
+      qtyOfTasks: this.state.tasks.length
+    })
   }
 
-  addDone = (i) => {
-    let currentTasks = this.state.tasks
-    currentTasks[i].status = "DONE"
-    this.qtyOfTasks()
-    this.redisplayTasks(currentTasks)
+  Done = (id) => {
+    var tempTasks = this.state.tasks.map((elem) => {
+      if (elem.id === id) {
+        elem.done = true
+      }
+      return elem
+    })
+    this.setState({
+      tasks: tempTasks,
+      qtyOfTasks: this.state.tasks.length
+    })
   }
 
-  addDeleted = (i) => {
-    let currentTasks = this.state.tasks
-    currentTasks[i].status = "DELETED"
-    this.qtyOfTasks()
-    this.redisplayTasks(currentTasks)
+  Deleted = (id) => {
+    var tempTasks = this.state.tasks.filter(function (elem) {
+      return (id !== elem.id);
+    })
+    this.setState({
+      tasks: tempTasks,
+      qtyOfTasks: tempTasks.length
+    })
   }
 
   addTask = (id, taskDescription) => {
     let currentTasks = this.state.tasks
+    const taskId = uuidv1()
     if (id === "topButton") {
       currentTasks.unshift({
         taskText: taskDescription,
-        status: "ACTIVE"
+        done: false,
+        id: taskId
       })
     }
     else {
       currentTasks.push({
         taskText: taskDescription,
-        status: "ACTIVE"
+        done: false,
+        id: taskId
       })
     }
-    this.qtyOfTasks()
-    this.redisplayTasks(currentTasks)
-  }
-
-  qtyOfTasks = () => {
-    let qtyTasks = 0
-    this.state.tasks.forEach(function (item) {
-      qtyTasks = qtyTasks + (item.status === "ACTIVE")
-    })
     this.setState({
-      qtyOfTasks: qtyTasks
+      tasks: currentTasks,
+      qtyOfTasks: this.state.tasks.length
     })
-
-    return qtyTasks
   }
 
   render() {
@@ -128,12 +128,10 @@ class App extends Component {
           {
             this.state.tasks.map((item, i) => {
               return <Actualtodolist
-                keyValue={i}
-                taskDescription={item.taskText}
-                taskStatus={item.status}
+                indexkey={i}
+                task={item}
                 buttonHandlerFunction={this.buttonHandler}
-                numOfTasks={this.state.qtyOfTasks}
-              />
+                numOfTasks={this.state.qtyOfTasks} />
             })
           }
 
@@ -144,9 +142,9 @@ class App extends Component {
 
         <div className="clearButton">
           <Clearbutton
-            buttonHandlerFunction={this.buttonHandler} />
+            buttonHandlerFunction={this.buttonHandler}
+            numOfTasks={this.state.qtyOfTasks} />
         </div>
-
         <Footer />
       </div>
 

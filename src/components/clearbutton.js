@@ -2,14 +2,29 @@ import React, { Component } from 'react';
 
 class Clearbutton extends Component {
 
-clearClicked = (event) => {
-this.props.buttonHandlerFunction(event.target.id)
-}
+    clearButtonText = () => {
+        if (this.props.numOfTasks === 1) {
+            return "Clear this item"
+        }
+        else {
+            return "Clear all items"
+        }
+    }
+
+    clearButtonClass = () => {
+        if (this.props.numOfTasks === 0) {
+            return "hide"
+        } else {
+            return "col text-center"
+        }
+    }
+
+
     render() {
         return (
-            <div className="col text-center">
+            <div className={this.clearButtonClass()}>
                 <div className="btn btn-primary notifications">
-                <button type="submit" id="clear" onClick={this.clearClicked} className="btn btn-primary addbutton" data-toggle="tooltip" data-placement="bottom" title="Clears the whole list">Clear all items</button>
+                    <button type="button" onClick={() => this.props.buttonHandlerFunction("clear")} className="btn btn-primary addbutton" data-toggle="tooltip" data-placement="bottom" title="Clears the whole list">{this.clearButtonText()}</button>
                 </div>
             </div>
         )
