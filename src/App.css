@@ -6,6 +6,18 @@
   text-align: center;
 }
 
+.spacetb {
+  padding-bottom: 5px;
+  padding-top: 5px;
+}
+
+.xsmall {
+  font-size: x-small;
+}
+.normalSize {
+  font-size: 200%;
+}
+
 .green {
   text-decoration: line-through;
   color: green;

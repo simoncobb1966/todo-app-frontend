@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import moment from 'moment'
-import { throws } from 'assert';
+// import { throws } from 'assert';
 
 class Entertodo extends Component {
 
@@ -17,7 +17,6 @@ class Entertodo extends Component {
     }
 
     addTaskClicked = (event) => {
-
         if (this.state.date==="") {
             this.setState({
                 errorMessage: "Please Enter Date"
@@ -45,7 +44,6 @@ class Entertodo extends Component {
     }
 
 handleDateChange = (event)=>{
-    // console.log(event.target.value)
     const date = event.target.value
     this.setState({
         date: date,
@@ -54,7 +52,7 @@ handleDateChange = (event)=>{
 }
 
     render() {
-        // const defaultDate=new Date()
+  
         return (
             <div>
             <div className="todoinput col text-center">

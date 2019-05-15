@@ -35,7 +35,7 @@ class Clearbutton extends Component {
         if (this.props.numOfTasks === 0) {
             return "hide"
         } else {
-            return "col text-center"
+            return "col text-center spacetb"
         }
     }
 
@@ -45,11 +45,10 @@ class Clearbutton extends Component {
 
 
             <div className={this.clearButtonClass()}>
-                <div className="btn btn-primary notifications">
+
                     <button type="button" onClick={this.handleClickOpen} className="btn btn-primary addbutton" data-toggle="tooltip" data-placement="bottom" title="Clears the whole list">{this.clearButtonText()}</button>
-                    {/* <button type="button" onClick={() => this.props.buttonHandlerFunction("clear")} className="btn btn-primary addbutton" data-toggle="tooltip" data-placement="bottom" title="Clears the whole list">{this.clearButtonText()}</button>
-                 */}
-                </div>
+                    
+
 
                 <Dialog
                     open={this.state.open}

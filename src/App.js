@@ -6,7 +6,9 @@ import Actualtodolist from './components/actualtodolist'
 import Footer from './components/footer'
 import Numberoftasks from './components/Numberoftasks'
 import Clearbutton from './components/clearbutton'
+import Sortbutton from './components/sortbutton'
 import uuidv1 from 'uuid/v1'
+import moment from 'moment'
 
 
 class App extends Component {
@@ -25,7 +27,41 @@ class App extends Component {
     if (button === "downButton") { this.moveTaskDown(data) }
     if (button === "topButton") { this.addTask(button, data, date) }
     if (button === "endButton") { this.addTask(button, data, date) }
+    if (button === "sort") { this.sort() }
   }
+
+  sort = () => {
+    var copyState = this.state
+    do {
+      var switched = this.sortPass(copyState)
+    }
+    while (switched === 1)
+    this.setState({
+      copyState,
+    })
+  }
+
+  sortPass = (copyState) => {
+    var switcher = 0
+    var i = 0
+    do {
+      // alert()
+      if (moment(copyState.tasks[i].date).isBefore(moment(copyState.tasks[i + 1].date))) {
+        switcher = 1
+        var temp = copyState.tasks[i]
+        var temp1 = copyState.tasks[i + 1]
+        copyState.tasks[i] = temp1
+        copyState.tasks[i + 1] = temp
+      }
+      i++
+    }
+    while (i < copyState.qtyOfTasks - 1)
+    return (switcher)
+
+
+  }
+
+
 
   clearList = () => {
     let currentTasks = []
@@ -90,7 +126,7 @@ class App extends Component {
     })
   }
 
-  addTask = (id, taskDescription,date) => {
+  addTask = (id, taskDescription, date) => {
     let currentTasks = this.state.tasks
     const taskId = uuidv1()
     if (id === "topButton") {
@@ -142,9 +178,17 @@ class App extends Component {
         </div>
 
         <div className="clearButton">
+
           <Clearbutton
             buttonHandlerFunction={this.buttonHandler}
             numOfTasks={this.state.qtyOfTasks} />
+        </div>
+        <div className="clearButton">
+          <Sortbutton
+            buttonHandlerFunction={this.buttonHandler}
+            numOfTasks={this.state.qtyOfTasks} />
+
+
         </div>
         <Footer />
       </div>

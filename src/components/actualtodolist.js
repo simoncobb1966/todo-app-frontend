@@ -6,9 +6,9 @@ class Actualtodolist extends Component {
 
     textCol = () => {
         if (this.props.task.done) {
-            return "green"
+            return "green normalSize"
         } else {
-            return "black"
+            return "black normalSize"
         }
     }
 
@@ -47,11 +47,12 @@ class Actualtodolist extends Component {
             <div className="row ">
                 <div className="col-sm-12 col-md-6 col-lg-8 todoText">
                     {
-                        <div id={this.props.task.id} className={this.textCol()} >
-                        {this.props.task.taskText} 
-                        &nbsp;
-                            <span className={isOverdue ? "overdue" : ""}>
-                                {moment(this.props.task.date, "DD-MM-YYYY").format("Do MMM YYYY")}
+                        <div id={this.props.task.id} className=' xsmall {this.textCol()}' >
+                            <span className= {isOverdue ? "overdue" : ""}>
+                                {moment(this.props.task.date, "DD-MM-YYYY").format("Do MMM YYYY")} &nbsp;
+                            </span>
+                            <span className={this.textCol()}>
+                             {this.props.task.taskText}
                             </span>
                         </div>
                     }
