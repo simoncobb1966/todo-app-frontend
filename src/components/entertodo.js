@@ -62,7 +62,7 @@ handleDateChange = (event)=>{
                     className="form-control todoInput">
                 </input>
                 
-                <label htmlForm="dateInput">Done By Date</label>
+                <label htmlForm="dateInput">Done By Date&nbsp;</label>
                 <input id="dateInput" type="date" onChange={this.handleDateChange} value={this.state.date}/>
                 <button type="submit" onClick={this.addTaskClicked} id="topButton" className="btn btn-primary addbutton">Add to top of list</button>
                 <button type="submit" onClick={this.addTaskClicked} id="endButton" className={this.hideButtons()} >Add to end of list</button>

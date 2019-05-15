@@ -183,11 +183,11 @@ class App extends Component {
             buttonHandlerFunction={this.buttonHandler}
             numOfTasks={this.state.qtyOfTasks} />
         </div>
+
         <div className="clearButton">
           <Sortbutton
             buttonHandlerFunction={this.buttonHandler}
             numOfTasks={this.state.qtyOfTasks} />
-
 
         </div>
         <Footer />
