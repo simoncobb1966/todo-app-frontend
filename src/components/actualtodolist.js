@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import moment from 'moment'
+
 
 class Actualtodolist extends Component {
 
@@ -39,12 +41,19 @@ class Actualtodolist extends Component {
     }
 
     render() {
-
+        const today = moment()
+        const isOverdue = this.props.task.date.isBefore(today)
         return (
             <div className="row ">
                 <div className="col-sm-12 col-md-6 col-lg-8 todoText">
                     {
-                        <div id={this.props.task.id} className={this.textCol()} >{this.props.task.taskText}</div>
+                        <div id={this.props.task.id} className={this.textCol()} >
+                        {this.props.task.taskText} 
+                        &nbsp;
+                            <span className={isOverdue ? "overdue" : ""}>
+                                {moment(this.props.task.date, "DD-MM-YYYY").format("Do MMM YYYY")}
+                            </span>
+                        </div>
                     }
                 </div>
 

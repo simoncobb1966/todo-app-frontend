@@ -2,9 +2,18 @@
   text-align: center;
 }
 
+.centered {
+  text-align: center;
+}
+
 .green {
   text-decoration: line-through;
   color: green;
+}
+
+.overdue {
+  color: red;
+  text-shadow: crimson 5pt;
 }
 
 .hide {
@@ -119,6 +128,9 @@ body {
   color: black
 }
 
+.red {
+  color: red
+}
 .green {
   color: green;
   text-decoration: line-through;

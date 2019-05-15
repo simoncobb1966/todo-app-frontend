@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-// import logo from './logo.svg';
 import './App.css';
 import Header from './components/header';
 import Entertodo from './components/entertodo';
@@ -17,15 +16,15 @@ class App extends Component {
     qtyOfTasks: 0
   }
 
-  buttonHandler = (button, data) => {
+  buttonHandler = (button, data, date) => {
     // alert (button + "  " + data)
     if (button === "clear") { this.clearList() }
     if (button === "done") { this.Done(data) }
     if (button === "delete") { this.Deleted(data) }
     if (button === "upButton") { this.moveTaskUp(data) }
     if (button === "downButton") { this.moveTaskDown(data) }
-    if (button === "topButton") { this.addTask(button, data) }
-    if (button === "endButton") { this.addTask(button, data) }
+    if (button === "topButton") { this.addTask(button, data, date) }
+    if (button === "endButton") { this.addTask(button, data, date) }
   }
 
   clearList = () => {
@@ -91,12 +90,13 @@ class App extends Component {
     })
   }
 
-  addTask = (id, taskDescription) => {
+  addTask = (id, taskDescription,date) => {
     let currentTasks = this.state.tasks
     const taskId = uuidv1()
     if (id === "topButton") {
       currentTasks.unshift({
         taskText: taskDescription,
+        date: date,
         done: false,
         id: taskId
       })
@@ -104,6 +104,7 @@ class App extends Component {
     else {
       currentTasks.push({
         taskText: taskDescription,
+        date: date,
         done: false,
         id: taskId
       })
