@@ -5,191 +5,212 @@ import Entertodo from './components/entertodo';
 import Actualtodolist from './components/actualtodolist'
 import Footer from './components/footer'
 import Numberoftasks from './components/Numberoftasks'
-import Clearbutton from './components/clearbutton'
-import Sortbutton from './components/sortbutton'
-import uuidv1 from 'uuid/v1'
 import moment from 'moment'
+import axios from "axios"
 
 
 class App extends Component {
 
   state = {
     tasks: [],
-    qtyOfTasks: 0
+    lastNum: 0,
+    qtyOfTasks: 0,
+    isLoaded: false,
+    sorted: false
+  }
+
+  //Anything in here happens on the 1st initial render of the component
+  componentDidMount = () => {
+    axios.get("https://f8nibhiadf.execute-api.eu-west-2.amazonaws.com/dev/tasks")
+      .then(result => {
+        this.setState({
+          tasks: result.data.tasks,
+          lastNum: result.data.tasks[result.data.tasks.length - 1].num,
+          isLoaded: true
+        })
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
+  // NORMAL STUFF NOW
+
+  componentDidUpdate() {
+    if (this.state.isLoaded && !this.state.sorted) {
+      var tasks = this.sort(this.state.tasks)
+      var copyState = this.state
+      copyState.tasks = tasks
+      copyState.sorted = true
+      copyState.lastNum = tasks[tasks.length - 1].num
+      var highestNum = 0
+      for (let i = 0; i < tasks.length; i++) {
+        if (tasks[i].num > highestNum) {
+          highestNum = tasks[i].num
+        }
+      }
+      copyState.lastNum = highestNum + 1
+      this.setState({
+        copyState
+      })
+    }
   }
 
   buttonHandler = (button, data, date) => {
-    // alert (button + "  " + data)
-    if (button === "clear") { this.clearList() }
     if (button === "done") { this.Done(data) }
     if (button === "delete") { this.Deleted(data) }
-    if (button === "upButton") { this.moveTaskUp(data) }
-    if (button === "downButton") { this.moveTaskDown(data) }
-    if (button === "topButton") { this.addTask(button, data, date) }
-    if (button === "endButton") { this.addTask(button, data, date) }
-    if (button === "sort") { this.sort() }
+    if (button === "addTask") { this.addTask(button, data, date) }
   }
 
-  sort = () => {
-    var copyState = this.state
+  sort = (tasks) => {
+    if (tasks.length < 2) { return tasks }
     do {
-      var switched = this.sortPass(copyState)
+      var switcher = this.sortPass(tasks)
     }
-    while (switched === 1)
-    this.setState({
-      copyState,
-    })
+    while (switcher === 1)
+    return (tasks)
   }
 
-  sortPass = (copyState) => {
+  sortPass = (tasks) => {
     var switcher = 0
-    var i = 0
+    var i = tasks.length - 1
     do {
-      // alert()
-      if (moment(copyState.tasks[i].date).isBefore(moment(copyState.tasks[i + 1].date))) {
+      if (moment(tasks[i].date).isBefore(moment(tasks[i - 1].date))) {
         switcher = 1
-        var temp = copyState.tasks[i]
-        var temp1 = copyState.tasks[i + 1]
-        copyState.tasks[i] = temp1
-        copyState.tasks[i + 1] = temp
+        var temp = tasks[i]
+        var temp1 = tasks[i - 1]
+        tasks[i] = temp1
+        tasks[i - 1] = temp
       }
-      i++
+      i--
     }
-    while (i < copyState.qtyOfTasks - 1)
+    while (i > 0)
     return (switcher)
-
-
   }
 
-
-
-  clearList = () => {
-    let currentTasks = []
-    this.setState({
-      tasks: currentTasks,
-      qtyOfTasks: 0
-    })
-  }
-
-  moveTaskUp = (id) => {
-    var tTasks = this.state.tasks
-    for (let i = 1; i < tTasks.length; i++) {
-      if (id === tTasks[i].id) {
-        let a = this.state.tasks[i]
-        let b = this.state.tasks[i - 1]
-        tTasks[i - 1] = a
-        tTasks[i] = b
-      }
-    }
-    this.setState({
-      tasks: tTasks,
-      qtyOfTasks: this.state.tasks.length
-    })
-  }
-
-  moveTaskDown = (id) => {
-    var tTasks = this.state.tasks
-    for (let i = tTasks.length - 2; i > -1; i--) {
-      if (id === tTasks[i].id) {
-        let a = this.state.tasks[i]
-        let b = this.state.tasks[i + 1]
-        tTasks[i + 1] = a
-        tTasks[i] = b
-      }
-    }
-    this.setState({
-      tasks: tTasks,
-      qtyOfTasks: this.state.tasks.length
-    })
-  }
-
-  Done = (id) => {
-    var tempTasks = this.state.tasks.map((elem) => {
-      if (elem.id === id) {
+  Done = (num) => {
+    var thisOne
+    var tempTasks = this.state.tasks.map((elem, i) => {
+      if (elem.num === num) {
         elem.done = true
+        thisOne = elem.num
       }
       return elem
     })
     this.setState({
-      tasks: tempTasks,
-      qtyOfTasks: this.state.tasks.length
+      tasks: tempTasks
+    })
+    this.dbDoneUpdate(thisOne)
+
+  }
+
+  Deleted = (num) => {
+    var tempTasks = this.state.tasks.filter(function (elem) {
+      return (num === elem.num);
+    })
+    tempTasks = this.state.tasks.filter(function (elem) {
+      return (num !== elem.num);
+    })
+    this.dbDelete(num)
+    this.setState({
+      tasks: tempTasks
     })
   }
 
-  Deleted = (id) => {
-    var tempTasks = this.state.tasks.filter(function (elem) {
-      return (id !== elem.id);
-    })
-    this.setState({
-      tasks: tempTasks,
-      qtyOfTasks: tempTasks.length
-    })
+  dbDoneUpdate = (num) => {
+    const url = "https://f8nibhiadf.execute-api.eu-west-2.amazonaws.com/dev/tasks/" + num.toString()
+    axios.put(url)
+      .then(result => {
+        // Task if deleted OK
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
+  dbDelete = (id) => {
+    const url = "https://f8nibhiadf.execute-api.eu-west-2.amazonaws.com/dev/tasks/" + id.toString()
+    axios.delete(url)
+      .then(result => {
+        // Task if deleted OK
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
+  dbDeleteAll = () => {
+    let num = this.state.tasks.length
+    for (let i = 0; i < num; i++) {
+      this.dbDelete(this.state.tasks[i].taskid)
+    }
+  }
+
+  dbAddTask = (object) => {
+    axios.post("https://f8nibhiadf.execute-api.eu-west-2.amazonaws.com/dev/tasks",
+      object
+    )
+      .then(result => {
+        return (result.data.taskId)
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   addTask = (id, taskDescription, date) => {
-    let currentTasks = this.state.tasks
-    const taskId = uuidv1()
-    if (id === "topButton") {
-      currentTasks.unshift({
-        taskText: taskDescription,
-        date: date,
-        done: false,
-        id: taskId
-      })
+    this.setState({ lastNum: this.state.lastNum + 1 })
+    var tasks
+    const taskObject = {
+      description: taskDescription,
+      done: false,
+      userid: 1,
+      date: date,
+      num: this.state.lastNum,
     }
-    else {
-      currentTasks.push({
-        taskText: taskDescription,
-        date: date,
-        done: false,
-        id: taskId
-      })
-    }
+    tasks = this.state.tasks.slice()
+    tasks.push(taskObject)
+    tasks[0].taskid = this.dbAddTask(taskObject)
+    tasks = this.sort(tasks)
     this.setState({
-      tasks: currentTasks,
-      qtyOfTasks: this.state.tasks.length
+      tasks: tasks
     })
   }
 
   render() {
+
     return (
 
       <div className="container mainstyle">
         <Header />
 
+        {/* USER INPUT THE TASK & DATE*/}
         <Entertodo
           buttonHandlerFunction={this.buttonHandler}
           numOfTasks={this.state.qtyOfTasks} />
 
-        <div className="mainList">
-          {
-            this.state.tasks.map((item, i) => {
-              return <Actualtodolist
-                indexkey={i}
-                task={item}
-                buttonHandlerFunction={this.buttonHandler}
-                numOfTasks={this.state.qtyOfTasks} />
-            })
-          }
+        {/* DISPLAY THE TASKS (WITH DATE DONE/DELETE BUTTONS) OR "FETCHING TASKS" */}
+        {this.state.isLoaded ? (
+          <div className="mainList">
+            {
+              this.state.tasks.map((item, i) => {
+                return <Actualtodolist
+                  key={item.num}
+                  task={item}
+                  buttonHandlerFunction={this.buttonHandler}
+                  numOfTasks={this.state.qtyOfTasks} />
+              })
+            }
 
-          <Numberoftasks
-            qtyOfTasksFunction={this.qtyOfTasks}
-            numOfTasks={this.state.qtyOfTasks} />
-        </div>
+            {/* DISPLAY THE NUMBER OF TASKS BUTTON */}
+            <Numberoftasks
+              qtyOfTasksFunction={this.qtyOfTasks}
+              numOfTasks={this.state.tasks.length} />
+          </div>
+        )
+          : ("Fetching Tasks")
+        }
 
-        <div className="clearButton">
-
-          <Clearbutton
-            buttonHandlerFunction={this.buttonHandler}
-            numOfTasks={this.state.qtyOfTasks} />
-        </div>
-
-        <div className="clearButton">
-          <Sortbutton
-            buttonHandlerFunction={this.buttonHandler}
-            numOfTasks={this.state.qtyOfTasks} />
-
-        </div>
         <Footer />
       </div>
 

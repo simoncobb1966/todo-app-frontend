@@ -26,6 +26,8 @@
 .overdue {
   color: red;
   text-shadow: crimson 5pt;
+  text-decoration: underline;
+  font-weight: 900;
 }
 
 .hide {

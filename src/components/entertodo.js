@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import moment from 'moment'
-// import { throws } from 'assert';
+
 
 class Entertodo extends Component {
 
@@ -22,7 +21,7 @@ class Entertodo extends Component {
                 errorMessage: "Please Enter Date"
             }) }   else  {
         if (this.state.taskDescription !== "") {
-            var newDate=moment(this.state.date, "YYYY-MM-DD")
+            var newDate=this.state.date
             //turn 1st char to upper case
             var taskString = this.state.taskDescription.charAt(0).toUpperCase() + this.state.taskDescription.slice(1)
             this.props.buttonHandlerFunction(event.target.id, taskString, newDate)
@@ -56,16 +55,20 @@ handleDateChange = (event)=>{
         return (
             <div>
             <div className="todoinput col text-center">
+                
                 <input type="text" ref="textInput"
                     placeholder="Add task here"
                     onChange={this.inputBoxChanged}
                     className="form-control todoInput">
                 </input>
                 
-                <label htmlForm="dateInput">Done By Date&nbsp;</label>
+
+                 <label form="dateInput">Done By Date&nbsp;</label>
                 <input id="dateInput" type="date" onChange={this.handleDateChange} value={this.state.date}/>
-                <button type="submit" onClick={this.addTaskClicked} id="topButton" className="btn btn-primary addbutton">Add to top of list</button>
-                <button type="submit" onClick={this.addTaskClicked} id="endButton" className={this.hideButtons()} >Add to end of list</button>
+
+
+                
+                <button type="submit" onClick={this.addTaskClicked} id="addTask" className="btn btn-primary addbutton">ADD TO LIST</button>
             </div>
             <h2 className="centered red">{this.state.errorMessage}</h2>
             </div>
