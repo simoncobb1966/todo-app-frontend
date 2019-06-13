@@ -13,54 +13,24 @@ class App extends Component {
 
   state = {
     tasks: [],
-    lastNum: 0,
     qtyOfTasks: 0,
-    isLoaded: false,
-    sorted: false
+    isLoaded: false
   }
 
   //Anything in here happens on the 1st initial render of the component
   componentDidMount = () => {
-    axios.get("https://f8nibhiadf.execute-api.eu-west-2.amazonaws.com/dev/tasks")
-      .then(result => {
-        this.setState({
-          tasks: result.data.tasks,
-          lastNum: result.data.tasks[result.data.tasks.length - 1].num,
-          isLoaded: true
-        })
-      })
-      .catch(err => {
-        console.log(err)
-      })
+    this.getTasks()
   }
 
-  // NORMAL STUFF NOW
-
-  componentDidUpdate() {
-    if (this.state.isLoaded && !this.state.sorted) {
-      var tasks = this.sort(this.state.tasks)
-      var copyState = this.state
-      copyState.tasks = tasks
-      copyState.sorted = true
-      copyState.lastNum = tasks[tasks.length - 1].num
-      var highestNum = 0
-      for (let i = 0; i < tasks.length; i++) {
-        if (tasks[i].num > highestNum) {
-          highestNum = tasks[i].num
-        }
-      }
-      copyState.lastNum = highestNum + 1
-      this.setState({
-        copyState
-      })
-    }
+  async getTasks() {
+    let response = await axios.get("https://f8nibhiadf.execute-api.eu-west-2.amazonaws.com/dev/tasks");
+    let { data } = response
+    this.setState({
+      tasks: this.sort(data.tasks),
+      isLoaded: true
+    })
   }
 
-  buttonHandler = (button, data, date) => {
-    if (button === "done") { this.Done(data) }
-    if (button === "delete") { this.Deleted(data) }
-    if (button === "addTask") { this.addTask(button, data, date) }
-  }
 
   sort = (tasks) => {
     if (tasks.length < 2) { return tasks }
@@ -88,33 +58,17 @@ class App extends Component {
     return (switcher)
   }
 
-  Done = (num) => {
-    var thisOne
+  Done = (id) => {
     var tempTasks = this.state.tasks.map((elem, i) => {
-      if (elem.num === num) {
+      if (elem.taskid === id) {
         elem.done = true
-        thisOne = elem.num
       }
       return elem
     })
     this.setState({
       tasks: tempTasks
     })
-    this.dbDoneUpdate(thisOne)
-
-  }
-
-  Deleted = (num) => {
-    var tempTasks = this.state.tasks.filter(function (elem) {
-      return (num === elem.num);
-    })
-    tempTasks = this.state.tasks.filter(function (elem) {
-      return (num !== elem.num);
-    })
-    this.dbDelete(num)
-    this.setState({
-      tasks: tempTasks
-    })
+    this.dbDoneUpdate(id)
   }
 
   dbDoneUpdate = (num) => {
@@ -128,6 +82,16 @@ class App extends Component {
       })
   }
 
+  Deleted = (id) => {
+    var tempTasks = this.state.tasks.filter(function (elem) {
+      return (id !== elem.taskid);
+    })
+    this.dbDelete(id)
+    this.setState({
+      tasks: tempTasks
+    })
+  }
+
   dbDelete = (id) => {
     const url = "https://f8nibhiadf.execute-api.eu-west-2.amazonaws.com/dev/tasks/" + id.toString()
     axios.delete(url)
@@ -139,42 +103,31 @@ class App extends Component {
       })
   }
 
-  dbDeleteAll = () => {
-    let num = this.state.tasks.length
-    for (let i = 0; i < num; i++) {
-      this.dbDelete(this.state.tasks[i].taskid)
-    }
-  }
-
-  dbAddTask = (object) => {
-    axios.post("https://f8nibhiadf.execute-api.eu-west-2.amazonaws.com/dev/tasks",
-      object
-    )
-      .then(result => {
-        return (result.data.taskId)
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  }
-
-  addTask = (id, taskDescription, date) => {
-    this.setState({ lastNum: this.state.lastNum + 1 })
+  addTask = (taskDescription, date) => {
     var tasks
     const taskObject = {
       description: taskDescription,
       done: false,
       userid: 1,
-      date: date,
-      num: this.state.lastNum,
+      date: date
     }
     tasks = this.state.tasks.slice()
-    tasks.push(taskObject)
-    tasks[0].taskid = this.dbAddTask(taskObject)
-    tasks = this.sort(tasks)
-    this.setState({
-      tasks: tasks
-    })
+    tasks.unshift(taskObject)
+    // THIS BIT SENDS THE DATA TO THE SERVER
+    axios.post("https://f8nibhiadf.execute-api.eu-west-2.amazonaws.com/dev/tasks",
+      taskObject
+    )
+      .then(result => {
+        tasks[0].taskid = result.data.taskId
+        tasks = this.sort(tasks)
+        this.setState({
+          tasks: tasks
+        })
+        return
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   render() {
@@ -186,7 +139,7 @@ class App extends Component {
 
         {/* USER INPUT THE TASK & DATE*/}
         <Entertodo
-          buttonHandlerFunction={this.buttonHandler}
+          buttonHandlerFunction={this.addTask}
           numOfTasks={this.state.qtyOfTasks} />
 
         {/* DISPLAY THE TASKS (WITH DATE DONE/DELETE BUTTONS) OR "FETCHING TASKS" */}
@@ -195,9 +148,11 @@ class App extends Component {
             {
               this.state.tasks.map((item, i) => {
                 return <Actualtodolist
-                  key={item.num}
+                  key={item.taskid}
                   task={item}
-                  buttonHandlerFunction={this.buttonHandler}
+                  // buttonHandlerFunction={this.addTask}
+                  doneFunction={this.Done}
+                  deleteFunction={this.Deleted}
                   numOfTasks={this.state.qtyOfTasks} />
               })
             }
